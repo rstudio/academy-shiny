@@ -26,6 +26,10 @@ ui = page_sidebar(
     ),
 
   ),
+  layout_column_wrap(
+    fill = FALSE,
+    uiOutput("valueboxes")
+  ),
   layout_columns(
     col_widths = c(8,4),
     card(
@@ -45,12 +49,11 @@ ui = page_sidebar(
         plotOutput("plot")
       ),
       full_screen = TRUE
-    ),
-    uiOutput("valueboxes")
+    )
+    # TODO: Add a card with a leaflet map here, next to the plot card!
+    # Use: card() with card_header() and card_body()
+    # Inside card_body(), add: leafletOutput("map", height = 400)
   )
-  # TODO: Add a card with a leaflet map here!
-  # Use: card() with card_header() and card_body()
-  # Inside card_body(), add: leafletOutput("map", height = 400)
 )
 
 
@@ -71,8 +74,8 @@ server = function(input, output, session) {
       round(x,1) |> paste("°C")
     }
 
-    layout_columns(
-      col_widths = c(12,12,12),
+    layout_column_wrap(
+      fill = FALSE,
       value_box(
         title = "Average Temp",
         value = mean(d_city()$temp_avg, na.rm=TRUE) |> clean(),

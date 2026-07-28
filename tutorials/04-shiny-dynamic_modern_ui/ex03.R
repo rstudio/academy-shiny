@@ -28,8 +28,6 @@ ui <- page_sidebar(
     ),
   ),
   
-  # Hint - the following two UI elements will need to be placed in a single row
-  # use layout_columns() with an appropriate col_widths to achieve this.
   card(
     card_header(
       textOutput("title"),
@@ -48,9 +46,11 @@ ui <- page_sidebar(
     full_screen = TRUE
   ),
   
-  # Hint - the arrangement of the value boxes is controled by the output of 
+  # Hint - the arrangement of the value boxes is controled by the output of
   # renderUI() in the server function.
-  uiOutput("valueboxes") 
+  #
+  # TODO: wrap this uiOutput() in layout_column_wrap(fill = FALSE, ...)
+  uiOutput("valueboxes")
 )
 
 
@@ -69,7 +69,8 @@ server <- function(input, output, session) {
     clean <- function(x) {
       round(x, 1) |> paste("°C")
     }
-    
+
+    # TODO: wrap these value_box() calls in layout_column_wrap(fill = FALSE, ...)
     layout_columns(
       value_box(
         title = "Average Temp",
