@@ -36,7 +36,7 @@ test_that("Weather app loads and responds to inputs", {
 # To run this test:
 # 1. Make sure you have shinytest2 installed: install.packages("shinytest2")
 # 2. In your Console, run (from the repo root):
-#    testthat::test_file("08-shiny-production_ready_apps/testing.R")
+#    testthat::test_file("tutorials/08-shiny-production_ready_apps/testing.R")
 #    (test_file() runs the test with this folder as the working directory,
 #    so AppDriver can find app.R)
 # 3. The test will open a headless browser, interact with the app, and check outputs
