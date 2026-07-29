@@ -60,7 +60,8 @@ server <- function(input, output, session) {
       round(x, 1) |> paste("°C")
     }
 
-    layout_columns(
+    layout_column_wrap(
+      fill = FALSE,
       value_box(
         title = "Average Temp",
         value = mean(d_city()$temp_avg, na.rm = TRUE) |> clean(),
