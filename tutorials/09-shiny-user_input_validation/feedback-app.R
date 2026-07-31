@@ -23,7 +23,7 @@ ui = page_sidebar(
     selectInput(
       "name", "Select an airport", choices = c()
     ),
-
+    actionButton("go", "Update plot")
   ),
   card(
     card_header(
@@ -67,14 +67,20 @@ server = function(input, output, session) {
       filter(name %in% input$name)
   })
 
-  output$plot = renderPlot({
-    # TODO: Wrap this code block in withProgress()
-    # Set message = "Creating plot..."
-    # Add Sys.sleep(1) to simulate slow processing
-
-    d_city() |>
-      ggplot(aes(x=date, y=.data[[input$var]])) +
+  # TODO: Swap actionButton("go", ...) above for input_task_button("go", ...),
+  # then chain bind_task_button("go") onto plot_task below
+  plot_task = ExtendedTask$new(function(city_data, var) {
+    Sys.sleep(1)  # Simulate a slow plot build
+    ggplot(city_data, aes(x=date, y=.data[[var]])) +
       geom_line()
+  })
+
+  observeEvent(input$go, {
+    plot_task$invoke(d_city(), input$var)
+  })
+
+  output$plot = renderPlot({
+    plot_task$result()
   })
 
 }
