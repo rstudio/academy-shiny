@@ -41,7 +41,7 @@ server <- function(input, output, session) {
   output$plot <- renderPlot({
     d |>
       filter(name %in% input$name) |>
-      ggplot(aes(x = date, y = .data[[input$var]], color = name)) +
+      ggplot(aes(x = date, y = .data[[input$var]])) +
       geom_line()
   })
 
