@@ -68,19 +68,11 @@ server = function(input, output, session) {
   })
 
   # TODO: Swap actionButton("go", ...) above for input_task_button("go", ...),
-  # then chain bind_task_button("go") onto plot_task below
-  plot_task = ExtendedTask$new(function(city_data, var) {
-    Sys.sleep(1)  # Simulate a slow plot build
-    ggplot(city_data, aes(x=date, y=.data[[var]])) +
-      geom_line()
-  })
-
-  observeEvent(input$go, {
-    plot_task$invoke(d_city(), input$var)
-  })
-
+  # then pipe renderPlot() below into bindEvent(input$go)
   output$plot = renderPlot({
-    plot_task$result()
+    Sys.sleep(1)  # Simulate a slow plot build
+    ggplot(d_city(), aes(x=date, y=.data[[input$var]])) +
+      geom_line()
   })
 
 }
