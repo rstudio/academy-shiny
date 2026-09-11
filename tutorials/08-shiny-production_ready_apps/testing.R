@@ -1,42 +1,40 @@
-# Testing the weather app with shinytest2
+# Testing the weather app with shiny::testServer()
 # This is a minimal example of a Shiny app test
 
-library(shinytest2)
+library(shiny)
 library(testthat)
 
 # Run this file to see the test in action!
 # In a real project, this would be in tests/testthat/test-app.R
 
-test_that("Weather app loads and responds to inputs", {
-  # Start the app (assumes app.R is in the same directory)
-  # In practice, you'd point to your app directory
-  app <- AppDriver$new(
-    name = "weather-app",
-    height = 800,
-    width = 1200
-  )
+test_that("Weather app responds to region and airport selection", {
+  # "." is the app in this folder (app.R). test_file() runs this test with its
+  # own folder as the working directory, so the app can find data/weather.csv.
+  testServer(".", {
+    # TODO: Try changing this to a different region and one of its airports.
+    # West: "San Francisco", "Denver", "Seattle-Tacoma", "Los Angeles"
+    # Northeast: "Boston Logan", "Newark", "John F. Kennedy"
+    # South: "Miami", "Orlando", "Raleigh-Durham"
+    session$setInputs(
+      region = "West",
+      name = "San Francisco",
+      var = "temp_avg"
+    )
 
-  # TODO: Try changing this to test a different region
-  # Options: "West", "Midwest", "Northeast", "South"
-  app$set_inputs(region = "West")
+    # The d_city() reactive should hold data for the selected airport only
+    expect_equal(unique(d_city()$name), "San Francisco")
 
-  # Wait for the region dropdown to populate
-  Sys.sleep(1)
+    # The card header should describe the current selection
+    expect_equal(output$title, "Average temp — San Francisco (West)")
 
-  # Select an airport
-  app$set_inputs(name = "San Francisco, CA")
-
-  # Check that outputs rendered correctly
-  # This creates a snapshot of all output values
-  app$expect_values()
-
-  # Test passed! The app loaded and responded to inputs.
+    # The plot should render without error
+    expect_true(nchar(output$plot$src) > 0)
+  })
 })
 
 # To run this test:
-# 1. Make sure you have shinytest2 installed: install.packages("shinytest2")
-# 2. In your Console, run (from the repo root):
+# 1. In your Console, run (from the repo root):
 #    testthat::test_file("tutorials/08-shiny-production_ready_apps/testing.R")
 #    (test_file() runs the test with this folder as the working directory,
-#    so AppDriver can find app.R)
-# 3. The test will open a headless browser, interact with the app, and check outputs
+#    so testServer(".") can find app.R)
+# 2. You should see "Test passed", with one success per expect_*() call
